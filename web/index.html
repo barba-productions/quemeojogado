@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b6338">
+  <meta name="description" content="Adivinhe jogadores do Brasileirão Série A pela silhueta, clube, camisa e posição neste quiz de futebol gratuito.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://southamerica-east1-quemeojogado.cloudfunctions.net http://127.0.0.1:5001 data:; connect-src 'self' https://southamerica-east1-quemeojogado.cloudfunctions.net http://127.0.0.1:5001; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>Quem é o jogadô? | Quiz de jogadores do Brasileirão</title>
+  <link rel="canonical" href="https://qj.barbaproductions.com/">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Quem é o jogadô? - Jogar">
+      <img src="assets/QJ_logo.png" alt="Quem é o jogadô?">
+      <span>Quem é o jogadô?</span>
+    </a>
+    <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    <nav id="site-nav" aria-label="Navegação principal">
+      <a class="active" href="index.html">Jogar</a>
+      <a href="ranking.html">Ranking</a>
+      <a href="hall-of-fame.html">Hall da Fama</a>
+      <a href="regras.html">Regras</a>
+    </nav>
+  </header>
+
+  <main class="game-shell">
+    <section class="score-strip" aria-label="Placar da partida">
+      <div><span class="score-label">Acertos</span><strong id="score">0</strong></div>
+      <div class="competition-mark"><img src="assets/brasileirao-placeholder.svg" alt="Brasileirão Série A 2026 - logo provisório"></div>
+      <div><span class="score-label">Tempo</span><strong id="timer">00:00</strong></div>
+    </section>
+
+    <section class="game-panel" aria-live="polite">
+      <div class="question-block">
+        <p class="eyebrow">Brasileirão Série A</p>
+        <h1>Quem é o jogador?</h1>
+        <p class="clue" id="clue">Preparando a escalação...</p>
+      </div>
+
+      <div class="player-stage">
+        <div class="pitch-lines" aria-hidden="true"></div>
+        <img id="player-image" alt="Silhueta do jogador misterioso" hidden>
+        <div class="loading-player" id="loading-player" role="status">Entrando em campo...</div>
+      </div>
+
+      <div class="options" id="options" aria-label="Alternativas"></div>
+      <p class="status-message" id="status-message" role="status"></p>
+      <button class="button button-secondary" id="retry-button" type="button" hidden>Tentar novamente</button>
+    </section>
+
+    <section class="game-over" id="game-over" hidden>
+      <p class="eyebrow">Fim de jogo</p>
+      <h2>Sua sequência: <span id="final-score">0</span></h2>
+      <p>Tempo total: <strong id="final-time">00:00</strong></p>
+      <form id="score-form">
+        <label for="player-name">Seu nome no Ranking dos "especialistas"</label>
+        <div class="submit-row">
+          <input id="player-name" name="name" maxlength="24" autocomplete="nickname" placeholder="Seu nome" required>
+          <button class="button button-primary" type="submit">Enviar resultado</button>
+        </div>
+      </form>
+      <p class="form-status" id="submit-status" role="status"></p>
+      <div class="end-actions">
+        <button class="button button-secondary" id="share-button" type="button">Compartilhar</button>
+        <button class="button button-primary" id="new-game-button" type="button">Jogar de novo</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Quem é o jogadô? · Barba Productions</span>
+    <a href="https://www.instagram.com/barba.productions/" target="_blank" rel="noopener noreferrer">@barbaproductions</a>
+  </footer>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

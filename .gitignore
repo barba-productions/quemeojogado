@@ -1,0 +1,11 @@
+node_modules/
+/SportsMonks/
+/QJ_logo*.png
+/android-chrome-*.png
+/apple-touch-icon.png
+/favicon*.png
+/favicon.ico
+/favicon_io.zip
+/site.webmanifest
+.DS_Store
+Thumbs.db

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b6338">
+  <meta name="description" content="Confira o ranking dos melhores no quiz Quem é o jogadô? e dispute o menor tempo entre os especialistas do Brasileirão.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://southamerica-east1-quemeojogado.cloudfunctions.net http://127.0.0.1:5001; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; img-src 'self'; base-uri 'self'">
+  <title>Ranking dos "especialistas" · Quem é o jogadô?</title>
+  <link rel="canonical" href="https://qj.barbaproductions.com/ranking.html">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><img src="assets/QJ_logo.png" alt="Quem é o jogadô?"><span>Quem é o jogadô?</span></a>
+    <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    <nav id="site-nav" aria-label="Navegação principal">
+      <a href="index.html">Jogar</a>
+      <a class="active" href="ranking.html">Ranking</a>
+      <a href="hall-of-fame.html">Hall da Fama</a>
+      <a href="regras.html">Regras</a>
+    </nav>
+  </header>
+
+  <main class="ranking-shell">
+    <div class="ranking-heading">
+      <p class="eyebrow">Classificação geral</p>
+      <h1>Ranking dos "especialistas"</h1>
+      <p>Mais acertos primeiro. Em caso de empate, vence quem foi mais rápido.</p>
+    </div>
+    <section class="ranking-board" aria-live="polite">
+      <table>
+        <thead><tr><th>Pos.</th><th>Nome</th><th>Acertos</th><th>Tempo</th><th>Data</th></tr></thead>
+        <tbody id="ranking-body"><tr><td colspan="5">Carregando classificação...</td></tr></tbody>
+      </table>
+    </section>
+    <a class="button button-primary" href="index.html">Entrar em campo</a>
+  </main>
+
+  <footer><span>Quem é o jogadô? · Barba Productions</span><a href="https://www.instagram.com/barba.productions/" target="_blank" rel="noopener noreferrer">@barbaproductions</a></footer>
+  <script type="module" src="js/ranking.js"></script>
+</body>
+</html>
