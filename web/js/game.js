@@ -6,16 +6,20 @@ const elements = {
   finalTime: document.querySelector('#final-time'),
   gameOver: document.querySelector('#game-over'),
   image: document.querySelector('#player-image'),
+  lives: document.querySelector('#lives'),
   loading: document.querySelector('#loading-player'),
   menu: document.querySelector('#menu-button'),
   name: document.querySelector('#player-name'),
   nav: document.querySelector('#site-nav'),
   newGame: document.querySelector('#new-game-button'),
   options: document.querySelector('#options'),
+  playerNameClue: document.querySelector('#player-name-clue'),
   retry: document.querySelector('#retry-button'),
   score: document.querySelector('#score'),
   scoreForm: document.querySelector('#score-form'),
   share: document.querySelector('#share-button'),
+  skip: document.querySelector('#skip-button'),
+  skips: document.querySelector('#skips'),
   status: document.querySelector('#status-message'),
   submitStatus: document.querySelector('#submit-status'),
   timer: document.querySelector('#timer'),
@@ -24,6 +28,8 @@ const elements = {
 let sessionId = null;
 let currentRound = null;
 let currentScore = 0;
+let currentLives = 3;
+let skipsRemaining = 1;
 let startedAt = 0;
 let elapsedMs = 0;
 let timerHandle = null;
@@ -81,7 +87,7 @@ function setRoundQueue(rounds) {
   roundQueue.forEach((round) => {
     if (preloadedImages.has(round.id)) return;
     const image = new Image();
-    image.src = round.silhouetteUrl;
+    image.src = round.imageUrl;
     preloadedImages.set(round.id, image);
   });
 }
@@ -93,11 +99,13 @@ function showRound(round) {
   elements.options.replaceChildren();
   elements.status.textContent = '';
   elements.retry.hidden = true;
-  elements.clue.textContent = `${round.clue.team} · Camisa ${round.clue.jerseyNumber} · ${round.clue.position}`;
+  elements.playerNameClue.textContent = round.clue.playerName;
+  elements.clue.textContent = `Camisa ${round.clue.jerseyNumber} · ${round.clue.position}`;
+  elements.skip.disabled = skipsRemaining === 0;
   elements.image.hidden = false;
   elements.loading.hidden = true;
-  elements.image.alt = `Silhueta de jogador do ${round.clue.team}`;
-  elements.image.src = round.silhouetteUrl;
+  elements.image.alt = `Foto de ${round.clue.playerName}`;
+  elements.image.src = round.imageUrl;
 
   round.options.forEach((option) => {
     const button = document.createElement('button');
@@ -117,15 +125,21 @@ async function startGame() {
   roundQueue = [];
   preloadedImages.clear();
   currentScore = 0;
+  currentLives = 3;
+  skipsRemaining = 1;
   awaitingAnswer = true;
   elements.score.textContent = '0';
+  elements.lives.textContent = '3';
+  elements.skips.textContent = '1';
+  elements.skip.disabled = false;
   elements.timer.textContent = '00:00';
   elements.gameOver.hidden = true;
   elements.image.hidden = true;
   elements.loading.hidden = false;
   elements.loading.textContent = 'Entrando em campo...';
   elements.options.replaceChildren();
-  elements.clue.textContent = 'Preparando a escalação...';
+  elements.playerNameClue.textContent = 'Preparando a escalação...';
+  elements.clue.textContent = '';
   elements.status.textContent = '';
   elements.retry.hidden = true;
   elements.submitStatus.textContent = '';
@@ -134,7 +148,11 @@ async function startGame() {
     const game = await api('startGame', {method: 'POST', body: '{}'});
     sessionId = game.sessionId;
     currentScore = game.score;
+    currentLives = game.lives;
+    skipsRemaining = game.skipsRemaining;
     elements.score.textContent = String(currentScore);
+    elements.lives.textContent = String(currentLives);
+    elements.skips.textContent = String(skipsRemaining);
     startTimer();
     setRoundQueue(game.rounds || [game.round]);
     showRound(roundQueue[0]);
@@ -145,35 +163,42 @@ async function startGame() {
   }
 }
 
-async function answer(optionId) {
+async function playRound({optionId = '', action = 'answer'} = {}) {
   if (awaitingAnswer || !currentRound || !sessionId) return;
   awaitingAnswer = true;
   setOptionsDisabled(true);
-  elements.status.textContent = 'Conferindo no VAR...';
+  elements.skip.disabled = true;
+  elements.status.textContent = action === 'skip' ? 'Chamando o VAR...' : 'Conferindo no VAR...';
 
   try {
     const result = await api('answerRound', {
       method: 'POST',
-      body: JSON.stringify({sessionId, roundId: currentRound.id, optionId}),
+      body: JSON.stringify({sessionId, roundId: currentRound.id, optionId, action}),
     });
     currentScore = result.score;
+    currentLives = result.lives;
+    skipsRemaining = result.skipsRemaining;
     elements.score.textContent = String(currentScore);
-    elements.image.src = result.revealUrl;
-    elements.image.alt = 'Foto revelada do jogador';
+    elements.lives.textContent = String(currentLives);
+    elements.skips.textContent = String(skipsRemaining);
 
     elements.options.querySelectorAll('button').forEach((button) => {
       if (button.dataset.optionId === result.correctOptionId) button.classList.add('correct');
-      if (button.dataset.optionId === optionId && !result.correct) button.classList.add('wrong');
+      if (action === 'answer' && button.dataset.optionId === optionId && !result.correct) {
+        button.classList.add('wrong');
+      }
     });
 
-    if (result.correct) {
-      elements.status.textContent = 'Gol! Resposta certa.';
+    if (!result.gameOver) {
+      if (result.skipped) elements.status.textContent = 'VAR usado. Próxima pergunta!';
+      else if (result.correct) elements.status.textContent = 'Gol! Time correto.';
+      else elements.status.textContent = `Quase! Você ainda tem ${currentLives} vida(s).`;
       setRoundQueue(result.rounds || [result.nextRound]);
       window.setTimeout(() => showRound(roundQueue[0]), 1100);
     } else {
       stopTimer();
       updateTimer();
-      elements.status.textContent = 'Bola fora! Fim de jogo!';
+      elements.status.textContent = 'Fim das vidas! Fim de jogo!';
       elements.finalScore.textContent = String(currentScore);
       elements.finalTime.textContent = formatTime(elapsedMs);
       window.setTimeout(() => {
@@ -184,8 +209,17 @@ async function answer(optionId) {
   } catch (error) {
     awaitingAnswer = false;
     setOptionsDisabled(false);
+    elements.skip.disabled = skipsRemaining === 0;
     elements.status.textContent = error.message;
   }
+}
+
+function answer(optionId) {
+  return playRound({optionId});
+}
+
+function skipRound() {
+  return playRound({action: 'skip'});
 }
 
 async function submitScore(event) {
@@ -229,6 +263,7 @@ elements.retry.addEventListener('click', startGame);
 elements.newGame.addEventListener('click', startGame);
 elements.scoreForm.addEventListener('submit', submitScore);
 elements.share.addEventListener('click', shareResult);
+elements.skip.addEventListener('click', skipRound);
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 startGame();

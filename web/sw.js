@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quemeojogado-v4';
+const CACHE_NAME = 'quemeojogado-v5';
 const STATIC_FILES = [
   './',
   './index.html',
