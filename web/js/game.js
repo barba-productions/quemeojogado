@@ -36,7 +36,7 @@ let timerHandle = null;
 let awaitingAnswer = false;
 let roundQueue = [];
 const preloadedImages = new Map();
-const RESULT_FEEDBACK_DELAY_MS = 500;
+const RESULT_FEEDBACK_DELAY_MS = 1000;
 const IMAGE_DECODE_TIMEOUT_MS = 400;
 const IMAGE_PRELOAD_TIMEOUT_MS = 2500;
 
