@@ -10,7 +10,8 @@ for (const file of htmlFiles) {
   for (const match of html.matchAll(/(?:href|src)="([^"#]+)"/g)) {
     const reference = match[1];
     if (/^(https?:|data:)/.test(reference)) continue;
-    if (!fs.existsSync(path.resolve(webRoot, reference))) missing.push(`${file}: ${reference}`);
+    const localPath = reference.split(/[?#]/, 1)[0];
+    if (!fs.existsSync(path.resolve(webRoot, localPath))) missing.push(`${file}: ${reference}`);
   }
 }
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'que-time-e-o-teu-v10';
+const CACHE_NAME = 'que-time-e-o-teu-v11';
 const STATIC_FILES = [
   './',
   './index.html',
@@ -7,7 +7,7 @@ const STATIC_FILES = [
   './regras.html',
   './css/style.css',
   './js/config.js',
-  './js/game.js',
+  './js/game.js?v=10',
   './js/ranking.js',
   './js/site.js',
   './assets/QTT_logo.png',
