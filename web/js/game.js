@@ -36,7 +36,7 @@ let timerHandle = null;
 let awaitingAnswer = false;
 let roundQueue = [];
 const preloadedImages = new Map();
-const FEEDBACK_DELAY_MS = 500;
+const FEEDBACK_DELAY_MS = 350;
 
 function formatTime(milliseconds) {
   const totalSeconds = Math.floor(milliseconds / 1000);
@@ -190,6 +190,7 @@ async function playRound({optionId = '', action = 'answer'} = {}) {
   setOptionsDisabled(true);
   elements.skip.disabled = true;
   elements.status.textContent = action === 'skip' ? 'Pulando pergunta...' : 'Olho no lance...';
+  const feedbackDelay = new Promise((resolve) => window.setTimeout(resolve, FEEDBACK_DELAY_MS));
 
   try {
     const result = await api('answerRound', {
@@ -216,7 +217,7 @@ async function playRound({optionId = '', action = 'answer'} = {}) {
       else elements.status.textContent = `Quase! Você ainda tem ${currentLives} vida(s).`;
       await Promise.all([
         setRoundQueue(result.rounds || [result.nextRound]),
-        new Promise((resolve) => window.setTimeout(resolve, FEEDBACK_DELAY_MS)),
+        feedbackDelay,
       ]);
       showRound(roundQueue[0]);
     } else {
