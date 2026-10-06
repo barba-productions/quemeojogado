@@ -37,6 +37,7 @@ let awaitingAnswer = false;
 let roundQueue = [];
 const preloadedImages = new Map();
 const FEEDBACK_DELAY_MS = 350;
+const IMAGE_DECODE_TIMEOUT_MS = 400;
 
 function formatTime(milliseconds) {
   const totalSeconds = Math.floor(milliseconds / 1000);
@@ -87,7 +88,10 @@ function preloadRoundImage(round, priority = 'low') {
   const ready = new Promise((resolve) => {
     image.addEventListener('load', async () => {
       try {
-        await image.decode();
+        await Promise.race([
+          image.decode(),
+          new Promise((resolve) => window.setTimeout(resolve, IMAGE_DECODE_TIMEOUT_MS)),
+        ]);
       } catch {
         // A loaded image is still usable when explicit decoding is unavailable.
       }
