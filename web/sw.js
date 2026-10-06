@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quemeojogado-v5';
+const CACHE_NAME = 'que-time-e-o-teu-v6';
 const STATIC_FILES = [
   './',
   './index.html',
@@ -10,7 +10,7 @@ const STATIC_FILES = [
   './js/game.js',
   './js/ranking.js',
   './js/site.js',
-  './assets/QJ_logo.png',
+  './assets/QTT_logo.png',
   './assets/brasileirao-placeholder.svg',
   './manifest.webmanifest',
   './favicon.ico',

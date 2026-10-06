@@ -67,7 +67,7 @@ nav a:hover, nav a.active { color: var(--yellow); border-color: var(--yellow); }
 .score-label { text-transform: uppercase; font-weight: 700; font-size: .78rem; }
 .score-strip strong { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; }
 .resource-icon { font-size: 1.5rem; line-height: 1; }
-.var-icon { min-width: 35px; min-height: 24px; display: inline-grid; place-items: center; padding: 2px 4px; color: var(--yellow); border: 2px solid currentColor; font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 800; line-height: 1; }
+.boot-icon { display: inline-grid; place-items: center; width: 34px; height: 28px; font-size: 1.45rem; line-height: 1; filter: saturate(.9); }
 
 .game-panel { margin-top: 18px; display: grid; grid-template-columns: minmax(250px, .85fr) minmax(320px, 1.15fr); grid-template-areas: 'question stage' 'options stage' 'skip stage' 'status stage'; gap: 16px 30px; padding: clamp(22px, 4vw, 42px); background: rgba(255,255,255,.94); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .question-block { grid-area: question; text-align: left; }
@@ -88,7 +88,7 @@ h1 { margin: 0; color: var(--blue); font-size: clamp(2.4rem, 7vw, 4.6rem); line-
 .option.wrong { color: var(--white); border-color: var(--red); background: var(--red); }
 .status-message { grid-area: status; min-height: 24px; margin: 0; font-weight: 700; }
 .skip-button { grid-area: skip; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 8px 14px; color: var(--blue); background: #fffbea; border: 2px solid var(--yellow); font-weight: 800; cursor: pointer; }
-.skip-button .var-icon { color: var(--blue); }
+.skip-button .boot-icon { transform: rotate(-8deg); }
 .skip-button:disabled { opacity: .45; cursor: default; }
 
 .button { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border: 2px solid transparent; border-radius: 3px; font-weight: 800; text-decoration: none; cursor: pointer; }

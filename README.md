@@ -1,6 +1,6 @@
-# Quem é o jogadô?
+# Que time é o teu?
 
-Frontend público do jogo de adivinhação de jogadores do Brasileirão Série A.
+Frontend público do jogo de identificação dos times de jogadores do Brasileirão Série A.
 A aplicação é uma PWA estática publicada pelo GitHub Pages em
 <https://qj.barbaproductions.com>.
 

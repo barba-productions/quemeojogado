@@ -1,6 +1,6 @@
 {
-  "name": "Quem é o jogadô?",
-  "short_name": "Jogadô?",
+  "name": "Que time é o teu?",
+  "short_name": "Que time?",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",

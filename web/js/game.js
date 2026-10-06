@@ -78,18 +78,36 @@ function setOptionsDisabled(disabled) {
   });
 }
 
-function setRoundQueue(rounds) {
+function preloadRoundImage(round, priority = 'low') {
+  if (preloadedImages.has(round.id)) return preloadedImages.get(round.id).ready;
+  const image = new Image();
+  image.decoding = 'async';
+  image.fetchPriority = priority;
+  const ready = new Promise((resolve) => {
+    image.addEventListener('load', async () => {
+      try {
+        await image.decode();
+      } catch {
+        // A loaded image is still usable when explicit decoding is unavailable.
+      }
+      resolve(image);
+    }, {once: true});
+    image.addEventListener('error', () => resolve(null), {once: true});
+  });
+  preloadedImages.set(round.id, {image, ready});
+  image.src = round.imageUrl;
+  return ready;
+}
+
+async function setRoundQueue(rounds) {
   roundQueue = rounds.filter(Boolean);
   const queuedIds = new Set(roundQueue.map((round) => round.id));
   preloadedImages.forEach((_, roundId) => {
     if (!queuedIds.has(roundId)) preloadedImages.delete(roundId);
   });
-  roundQueue.forEach((round) => {
-    if (preloadedImages.has(round.id)) return;
-    const image = new Image();
-    image.src = round.imageUrl;
-    preloadedImages.set(round.id, image);
-  });
+  if (!roundQueue.length) return;
+  await preloadRoundImage(roundQueue[0], 'high');
+  roundQueue.slice(1).forEach((round) => preloadRoundImage(round));
 }
 
 function showRound(round) {
@@ -105,7 +123,7 @@ function showRound(round) {
   elements.image.hidden = false;
   elements.loading.hidden = true;
   elements.image.alt = `Foto de ${round.clue.playerName}`;
-  elements.image.src = round.imageUrl;
+  elements.image.src = preloadedImages.get(round.id)?.image.src || round.imageUrl;
 
   round.options.forEach((option) => {
     const button = document.createElement('button');
@@ -153,9 +171,9 @@ async function startGame() {
     elements.score.textContent = String(currentScore);
     elements.lives.textContent = String(currentLives);
     elements.skips.textContent = String(skipsRemaining);
-    startTimer();
-    setRoundQueue(game.rounds || [game.round]);
+    await setRoundQueue(game.rounds || [game.round]);
     showRound(roundQueue[0]);
+    startTimer();
   } catch (error) {
     elements.loading.textContent = 'O vestiário ainda não abriu.';
     elements.status.textContent = error.message;
@@ -168,7 +186,7 @@ async function playRound({optionId = '', action = 'answer'} = {}) {
   awaitingAnswer = true;
   setOptionsDisabled(true);
   elements.skip.disabled = true;
-  elements.status.textContent = action === 'skip' ? 'Chamando o VAR...' : 'Conferindo no VAR...';
+  elements.status.textContent = action === 'skip' ? 'Pulando pergunta...' : 'Conferindo o lance...';
 
   try {
     const result = await api('answerRound', {
@@ -190,11 +208,14 @@ async function playRound({optionId = '', action = 'answer'} = {}) {
     });
 
     if (!result.gameOver) {
-      if (result.skipped) elements.status.textContent = 'VAR usado. Próxima pergunta!';
+      if (result.skipped) elements.status.textContent = 'Pulo usado. Próxima pergunta!';
       else if (result.correct) elements.status.textContent = 'Gol! Time correto.';
       else elements.status.textContent = `Quase! Você ainda tem ${currentLives} vida(s).`;
-      setRoundQueue(result.rounds || [result.nextRound]);
-      window.setTimeout(() => showRound(roundQueue[0]), 1100);
+      await Promise.all([
+        setRoundQueue(result.rounds || [result.nextRound]),
+        new Promise((resolve) => window.setTimeout(resolve, 1100)),
+      ]);
+      showRound(roundQueue[0]);
     } else {
       stopTimer();
       updateTimer();
@@ -241,8 +262,8 @@ async function submitScore(event) {
 }
 
 async function shareResult() {
-  const text = `Fiz ${currentScore} acerto(s) em ${formatTime(elapsedMs)} no Quem é o jogadô? Você consegue bater?`;
-  const shareData = {title: 'Quem é o jogadô?', text, url: window.location.href};
+  const text = `Fiz ${currentScore} acerto(s) em ${formatTime(elapsedMs)} no Que time é o teu? Você consegue bater?`;
+  const shareData = {title: 'Que time é o teu?', text, url: window.location.href};
   try {
     if (navigator.share) await navigator.share(shareData);
     else {

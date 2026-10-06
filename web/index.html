@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b6338">
-  <meta name="description" content="Descubra o time dos jogadores do Brasileirão Série A usando foto, nome, camisa e posição. Você tem três vidas e uma ajuda do VAR.">
+  <meta name="description" content="Descubra o time dos jogadores do Brasileirão Série A usando foto, nome, camisa e posição. Você tem três vidas e um pulo.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://southamerica-east1-quemeojogado.cloudfunctions.net http://127.0.0.1:5001 data:; connect-src 'self' https://southamerica-east1-quemeojogado.cloudfunctions.net http://127.0.0.1:5001; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; base-uri 'self'; form-action 'self'">
-  <title>Quem é o jogadô? | Quiz de jogadores do Brasileirão</title>
+  <title>Que time é o teu? | Quiz de jogadores do Brasileirão</title>
   <link rel="canonical" href="https://qj.barbaproductions.com/">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -20,9 +20,9 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html" aria-label="Quem é o jogadô? - Jogar">
-      <img src="assets/QJ_logo.png" alt="Quem é o jogadô?">
-      <span>Quem é o jogadô?</span>
+    <a class="brand" href="index.html" aria-label="Que time é o teu? - Jogar">
+      <img src="assets/QTT_logo.png" alt="Que time é o teu?">
+      <span>Que time é o teu?</span>
     </a>
     <button class="menu-button" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
     <nav id="site-nav" aria-label="Navegação principal">
@@ -37,7 +37,7 @@
     <section class="score-strip" aria-label="Placar da partida">
       <div><span class="score-label">Acertos</span><strong id="score">0</strong></div>
       <div class="resource-counter"><span class="resource-icon" aria-hidden="true">⚽</span><span class="score-label">Vidas</span><strong id="lives">3</strong></div>
-      <div class="resource-counter"><span class="var-icon" aria-hidden="true">VAR</span><span class="score-label">Pulos</span><strong id="skips">1</strong></div>
+      <div class="resource-counter"><span class="boot-icon" aria-hidden="true">👟</span><span class="score-label">Pulos</span><strong id="skips">1</strong></div>
       <div><span class="score-label">Tempo</span><strong id="timer">00:00</strong></div>
     </section>
 
@@ -56,7 +56,7 @@
       </div>
 
       <div class="options" id="options" aria-label="Alternativas"></div>
-      <button class="skip-button" id="skip-button" type="button"><span class="var-icon" aria-hidden="true">VAR</span>Pular pergunta</button>
+      <button class="skip-button" id="skip-button" type="button"><span class="boot-icon" aria-hidden="true">👟</span>Pular pergunta</button>
       <p class="status-message" id="status-message" role="status"></p>
       <button class="button button-secondary" id="retry-button" type="button" hidden>Tentar novamente</button>
     </section>
@@ -81,7 +81,7 @@
   </main>
 
   <footer>
-    <span>Quem é o jogadô? · Barba Productions</span>
+    <span>Que time é o teu? · Barba Productions</span>
     <a href="https://www.instagram.com/barba.productions/" target="_blank" rel="noopener noreferrer">@barbaproductions</a>
   </footer>
 
