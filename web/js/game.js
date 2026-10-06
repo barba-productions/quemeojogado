@@ -38,6 +38,7 @@ let roundQueue = [];
 const preloadedImages = new Map();
 const FEEDBACK_DELAY_MS = 350;
 const IMAGE_DECODE_TIMEOUT_MS = 400;
+const IMAGE_PRELOAD_TIMEOUT_MS = 2500;
 
 function formatTime(milliseconds) {
   const totalSeconds = Math.floor(milliseconds / 1000);
@@ -86,6 +87,7 @@ function preloadRoundImage(round, priority = 'low') {
   image.decoding = 'async';
   image.fetchPriority = priority;
   const ready = new Promise((resolve) => {
+    const preloadTimeout = window.setTimeout(() => resolve(null), IMAGE_PRELOAD_TIMEOUT_MS);
     image.addEventListener('load', async () => {
       try {
         await Promise.race([
@@ -95,9 +97,13 @@ function preloadRoundImage(round, priority = 'low') {
       } catch {
         // A loaded image is still usable when explicit decoding is unavailable.
       }
+      window.clearTimeout(preloadTimeout);
       resolve(image);
     }, {once: true});
-    image.addEventListener('error', () => resolve(null), {once: true});
+    image.addEventListener('error', () => {
+      window.clearTimeout(preloadTimeout);
+      resolve(null);
+    }, {once: true});
   });
   preloadedImages.set(round.id, {image, ready});
   image.src = round.imageUrl;
@@ -125,10 +131,24 @@ function showRound(round) {
   elements.playerNameClue.textContent = round.clue.playerName;
   elements.clue.textContent = `Camisa ${round.clue.jerseyNumber} · ${round.clue.position}`;
   elements.skip.disabled = skipsRemaining === 0;
-  elements.image.hidden = false;
-  elements.loading.hidden = true;
+  elements.image.hidden = true;
+  elements.loading.hidden = false;
+  elements.loading.classList.remove('error');
+  elements.loading.textContent = 'Entrando em campo...';
   elements.image.alt = `Foto de ${round.clue.playerName}`;
+  elements.image.onload = () => {
+    elements.image.hidden = false;
+    elements.loading.hidden = true;
+  };
+  elements.image.onerror = () => {
+    elements.loading.classList.add('error');
+    elements.loading.textContent = 'Foto indisponível.';
+  };
   elements.image.src = preloadedImages.get(round.id)?.image.src || round.imageUrl;
+  if (elements.image.complete && elements.image.naturalWidth > 0) {
+    elements.image.hidden = false;
+    elements.loading.hidden = true;
+  }
 
   round.options.forEach((option) => {
     const button = document.createElement('button');
