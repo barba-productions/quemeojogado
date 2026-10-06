@@ -2,7 +2,7 @@
 
 Frontend público do jogo de identificação dos times de jogadores do Brasileirão Série A.
 A aplicação é uma PWA estática publicada pelo GitHub Pages em
-<https://qj.barbaproductions.com>.
+<https://quetimeteu.barbaproductions.com>.
 
 ## Estrutura
 
@@ -24,4 +24,4 @@ node validate-web.js
 ## Publicação
 
 Todo push para `main` executa a ação **Publicar site**. O arquivo `web/CNAME`
-configura o domínio `qj.barbaproductions.com`.
+configura o domínio `quetimeteu.barbaproductions.com`.

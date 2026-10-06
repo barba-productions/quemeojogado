@@ -36,6 +36,7 @@ let timerHandle = null;
 let awaitingAnswer = false;
 let roundQueue = [];
 const preloadedImages = new Map();
+const FEEDBACK_DELAY_MS = 500;
 
 function formatTime(milliseconds) {
   const totalSeconds = Math.floor(milliseconds / 1000);
@@ -154,6 +155,7 @@ async function startGame() {
   elements.gameOver.hidden = true;
   elements.image.hidden = true;
   elements.loading.hidden = false;
+  elements.loading.classList.remove('error');
   elements.loading.textContent = 'Entrando em campo...';
   elements.options.replaceChildren();
   elements.playerNameClue.textContent = 'Preparando a escalação...';
@@ -175,6 +177,7 @@ async function startGame() {
     showRound(roundQueue[0]);
     startTimer();
   } catch (error) {
+    elements.loading.classList.add('error');
     elements.loading.textContent = 'O vestiário ainda não abriu.';
     elements.status.textContent = error.message;
     elements.retry.hidden = false;
@@ -186,7 +189,7 @@ async function playRound({optionId = '', action = 'answer'} = {}) {
   awaitingAnswer = true;
   setOptionsDisabled(true);
   elements.skip.disabled = true;
-  elements.status.textContent = action === 'skip' ? 'Pulando pergunta...' : 'Conferindo o lance...';
+  elements.status.textContent = action === 'skip' ? 'Pulando pergunta...' : 'Olho no lance...';
 
   try {
     const result = await api('answerRound', {
@@ -208,18 +211,18 @@ async function playRound({optionId = '', action = 'answer'} = {}) {
     });
 
     if (!result.gameOver) {
-      if (result.skipped) elements.status.textContent = 'Pulo usado. Próxima pergunta!';
-      else if (result.correct) elements.status.textContent = 'Gol! Time correto.';
+      if (result.skipped) elements.status.textContent = 'Pulou na hora certa. Próxima pergunta!';
+      else if (result.correct) elements.status.textContent = 'Golaço! Certa resposta!';
       else elements.status.textContent = `Quase! Você ainda tem ${currentLives} vida(s).`;
       await Promise.all([
         setRoundQueue(result.rounds || [result.nextRound]),
-        new Promise((resolve) => window.setTimeout(resolve, 1100)),
+        new Promise((resolve) => window.setTimeout(resolve, FEEDBACK_DELAY_MS)),
       ]);
       showRound(roundQueue[0]);
     } else {
       stopTimer();
       updateTimer();
-      elements.status.textContent = 'Fim das vidas! Fim de jogo!';
+      elements.status.textContent = 'Só bola fora! Fim de jogo!';
       elements.finalScore.textContent = String(currentScore);
       elements.finalTime.textContent = formatTime(elapsedMs);
       window.setTimeout(() => {
